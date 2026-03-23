@@ -19,28 +19,31 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // General dashboard redirect
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Admin routes
     Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
+
         Route::get('/dashboard', [DashboardController::class, 'adminDashboard'])->name('dashboard');
+
         Route::resource('students', StudentController::class);
         Route::resource('staff', StaffController::class);
         Route::resource('classes', ClassController::class);
-        Route::resource('dormitories', DormitoryController::class);
         Route::resource('admissions', AdmissionController::class);
         Route::resource('attendance', AttendanceController::class);
         Route::resource('meals', MealController::class);
         Route::resource('academics', AcademicController::class);
         Route::resource('events', EventController::class);
-    });
 
+        // Dormitory routes
+        Route::resource('dormitories', DormitoryController::class);
+        Route::post('/dormitories/assign-bed', [DormitoryController::class, 'assignBed'])->name('dormitories.assign-bed');
+        Route::post('/dormitories/release-bed/{bed}', [DormitoryController::class, 'releaseBed'])->name('dormitories.release-bed');
+
+    });
 });
 
 require __DIR__.'/auth.php';
