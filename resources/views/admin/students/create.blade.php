@@ -89,9 +89,17 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Class</label>
-                <input type="text" name="class" value="{{ old('class') }}"
-                       placeholder="e.g. Form 1A"
-                       class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select name="class"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">— Select Class —</option>
+                    @foreach(\App\Models\SchoolClass::where('status', 'active')->get() as $schoolClass)
+                        <option value="{{ $schoolClass->name }}"
+                            {{ old('class') == $schoolClass->name ? 'selected' : '' }}>
+                            {{ $schoolClass->name }} — {{ $schoolClass->level }}
+                            ({{ $schoolClass->available_spots }} spots left)
+                        </option>
+                    @endforeach
+                </select>
             </div>
 
             {{-- Dormitory Dropdown — filters by gender --}}
@@ -142,7 +150,6 @@
     </form>
 </div>
 
-{{-- Gender → Dormitory Filter Script --}}
 <script>
     const genderSelect     = document.getElementById('genderSelect');
     const dormitorySelect  = document.getElementById('dormitorySelect');
@@ -151,18 +158,14 @@
 
     genderSelect.addEventListener('change', function () {
         const selectedGender = this.value;
-
-        // Reset dormitory dropdown
         dormitorySelect.value = '';
         let visibleCount = 0;
 
         allOptions.forEach(option => {
             const dormGender    = option.getAttribute('data-gender');
             const availableBeds = parseInt(option.getAttribute('data-available'));
-
-            // Show if gender matches (or dormitory is mixed) and has available beds
-            const genderMatch = (dormGender === selectedGender || dormGender === 'mixed');
-            const hasSpace    = availableBeds > 0;
+            const genderMatch   = (dormGender === selectedGender || dormGender === 'mixed');
+            const hasSpace      = availableBeds > 0;
 
             if (genderMatch && hasSpace) {
                 option.style.display = '';
@@ -172,16 +175,13 @@
             }
         });
 
-        // Show placeholder based on gender selected
         dormitorySelect.options[0].text = selectedGender
             ? '— Select Dormitory —'
             : '— Select Gender First —';
 
-        // Show warning if no dormitories available
         noDormMessage.classList.toggle('hidden', visibleCount > 0);
     });
 
-    // On page load if gender already selected (old input)
     if (genderSelect.value) {
         genderSelect.dispatchEvent(new Event('change'));
     }

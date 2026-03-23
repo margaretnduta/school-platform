@@ -3,83 +3,89 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\SchoolClass;
+use App\Models\Staff;
+use App\Models\Student;
 use Illuminate\Http\Request;
 
 class ClassController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        //
+        $classes = SchoolClass::with('classTeacher')->latest()->get();
+        return view('admin.classes.index', compact('classes'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        //
+        $teachers = Staff::where('role', 'teacher')
+                         ->where('status', 'active')
+                         ->get();
+        return view('admin.classes.create', compact('teachers'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name'     => 'required|string|max:255|unique:school_classes,name',
+            'level'    => 'required|string|max:255',
+            'capacity' => 'required|integer|min:1',
+        ]);
+
+        SchoolClass::create([
+            'name'             => $request->name,
+            'level'            => $request->level,
+            'stream'           => $request->stream,
+            'capacity'         => $request->capacity,
+            'class_teacher_id' => $request->class_teacher_id,
+            'room_number'      => $request->room_number,
+            'status'           => 'active',
+        ]);
+
+        return redirect()->route('admin.classes.index')
+                         ->with('success', 'Class created successfully!');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function show(SchoolClass $class)
     {
-        //
+        $students = Student::where('class', $class->name)->paginate(20);
+        return view('admin.classes.show', compact('class', 'students'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function edit(SchoolClass $class)
     {
-        //
+        $teachers = Staff::where('role', 'teacher')
+                         ->where('status', 'active')
+                         ->get();
+        return view('admin.classes.edit', compact('class', 'teachers'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function update(Request $request, SchoolClass $class)
     {
-        //
+        $request->validate([
+            'name'     => 'required|string|max:255|unique:school_classes,name,' . $class->id,
+            'level'    => 'required|string|max:255',
+            'capacity' => 'required|integer|min:1',
+        ]);
+
+        $class->update([
+            'name'             => $request->name,
+            'level'            => $request->level,
+            'stream'           => $request->stream,
+            'capacity'         => $request->capacity,
+            'class_teacher_id' => $request->class_teacher_id,
+            'room_number'      => $request->room_number,
+            'status'           => $request->status,
+        ]);
+
+        return redirect()->route('admin.classes.index')
+                         ->with('success', 'Class updated successfully!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function destroy(SchoolClass $class)
     {
-        //
+        $class->delete();
+        return redirect()->route('admin.classes.index')
+                         ->with('success', 'Class deleted successfully!');
     }
 }

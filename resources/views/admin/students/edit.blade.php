@@ -18,7 +18,6 @@
         </div>
     @endif
 
-    {{-- Current Bed Info --}}
     @if($currentBed)
     <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
         <p class="text-sm font-semibold text-blue-900">Current Bed Assignment</p>
@@ -101,8 +100,17 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Class</label>
-                <input type="text" name="class" value="{{ old('class', $student->class) }}"
-                       class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select name="class"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">— Select Class —</option>
+                    @foreach(\App\Models\SchoolClass::where('status', 'active')->get() as $schoolClass)
+                        <option value="{{ $schoolClass->name }}"
+                            {{ $student->class == $schoolClass->name ? 'selected' : '' }}>
+                            {{ $schoolClass->name }} — {{ $schoolClass->level }}
+                            ({{ $schoolClass->available_spots }} spots left)
+                        </option>
+                    @endforeach
+                </select>
             </div>
 
             <div>
@@ -115,11 +123,10 @@
                 </select>
             </div>
 
-            {{-- Dormitory Dropdown --}}
             <div class="md:col-span-2">
                 <label class="block text-sm font-medium text-gray-700 mb-1">
                     Change Dormitory
-                    <span class="text-xs text-gray-400 ml-1">(Only matching dormitories shown — changing will release current bed)</span>
+                    <span class="text-xs text-gray-400 ml-1">(Changing will release current bed and assign a new one)</span>
                 </label>
                 <select name="dormitory_id" id="dormitorySelect"
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -170,7 +177,6 @@
 
     function filterDormitories(selectedGender) {
         let visibleCount = 0;
-
         allOptions.forEach(option => {
             const dormGender    = option.getAttribute('data-gender');
             const availableBeds = parseInt(option.getAttribute('data-available'));
@@ -184,7 +190,6 @@
                 option.style.display = 'none';
             }
         });
-
         noDormMessage.classList.toggle('hidden', visibleCount > 0);
     }
 
@@ -192,7 +197,6 @@
         filterDormitories(this.value);
     });
 
-    // Run on page load with current gender
     filterDormitories(genderSelect.value);
 </script>
 
