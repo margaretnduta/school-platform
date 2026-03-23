@@ -18,7 +18,7 @@
         </div>
     @endif
 
-    <form action="{{ route('admin.students.store') }}" method="POST">
+    <form action="{{ route('admin.students.store') }}" method="POST" id="studentForm">
         @csrf
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -39,11 +39,11 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Gender *</label>
-                <select name="gender"
+                <select name="gender" id="genderSelect"
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required>
                     <option value="">Select Gender</option>
-                    <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Male</option>
+                    <option value="male"   {{ old('gender') == 'male'   ? 'selected' : '' }}>Male</option>
                     <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Female</option>
                 </select>
             </div>
@@ -94,11 +94,30 @@
                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Dormitory</label>
-                <input type="text" name="dormitory" value="{{ old('dormitory') }}"
-                       placeholder="e.g. Kilimanjaro"
-                       class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            {{-- Dormitory Dropdown — filters by gender --}}
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Dormitory
+                    <span class="text-xs text-gray-400 ml-1">(Select gender first — only matching dormitories will show)</span>
+                </label>
+                <select name="dormitory_id" id="dormitorySelect"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">— Select Gender First —</option>
+                    @foreach($dormitories as $dormitory)
+                        <option value="{{ $dormitory->id }}"
+                                data-gender="{{ $dormitory->gender }}"
+                                data-available="{{ $dormitory->available_beds }}"
+                                style="display:none"
+                                {{ old('dormitory_id') == $dormitory->id ? 'selected' : '' }}>
+                            {{ $dormitory->name }}
+                            ({{ ucfirst($dormitory->gender) }})
+                            — {{ $dormitory->available_beds }} beds available
+                        </option>
+                    @endforeach
+                </select>
+                <p id="noDormMessage" class="text-xs text-red-500 mt-1 hidden">
+                    No available dormitories for this gender.
+                </p>
             </div>
 
             <div class="md:col-span-2">
@@ -122,5 +141,50 @@
 
     </form>
 </div>
+
+{{-- Gender → Dormitory Filter Script --}}
+<script>
+    const genderSelect     = document.getElementById('genderSelect');
+    const dormitorySelect  = document.getElementById('dormitorySelect');
+    const noDormMessage    = document.getElementById('noDormMessage');
+    const allOptions       = dormitorySelect.querySelectorAll('option[data-gender]');
+
+    genderSelect.addEventListener('change', function () {
+        const selectedGender = this.value;
+
+        // Reset dormitory dropdown
+        dormitorySelect.value = '';
+        let visibleCount = 0;
+
+        allOptions.forEach(option => {
+            const dormGender    = option.getAttribute('data-gender');
+            const availableBeds = parseInt(option.getAttribute('data-available'));
+
+            // Show if gender matches (or dormitory is mixed) and has available beds
+            const genderMatch = (dormGender === selectedGender || dormGender === 'mixed');
+            const hasSpace    = availableBeds > 0;
+
+            if (genderMatch && hasSpace) {
+                option.style.display = '';
+                visibleCount++;
+            } else {
+                option.style.display = 'none';
+            }
+        });
+
+        // Show placeholder based on gender selected
+        dormitorySelect.options[0].text = selectedGender
+            ? '— Select Dormitory —'
+            : '— Select Gender First —';
+
+        // Show warning if no dormitories available
+        noDormMessage.classList.toggle('hidden', visibleCount > 0);
+    });
+
+    // On page load if gender already selected (old input)
+    if (genderSelect.value) {
+        genderSelect.dispatchEvent(new Event('change'));
+    }
+</script>
 
 @endsection
