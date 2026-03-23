@@ -1,16 +1,49 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Parent Dashboard
-        </h2>
-    </x-slot>
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    Welcome! 👨‍👩‍👦 View your child's progress and school updates here.
+@extends('layouts.portal')
+
+@section('page_title', 'Parent Dashboard')
+
+@section('content')
+
+<div class="max-w-4xl mx-auto">
+
+    <div class="bg-white rounded-xl shadow p-6 mb-6">
+        <h3 class="text-lg font-semibold text-gray-700 mb-1">Welcome, {{ auth()->user()->name }}! 👋</h3>
+        <p class="text-sm text-gray-500">Manage your child's admission and track their progress here.</p>
+    </div>
+
+    @if($application)
+    <div class="bg-white rounded-xl shadow p-6">
+        <h4 class="font-semibold text-gray-700 mb-4">Latest Application Status</h4>
+        <div class="flex justify-between items-center">
+            <div>
+                <p class="font-semibold text-blue-900">{{ $application->full_name }}</p>
+                <p class="text-sm text-gray-500">{{ $application->application_number }}</p>
+                <p class="text-sm text-gray-500">Applying for: {{ $application->applying_for_class }}</p>
+            </div>
+            <div class="text-right">
+                <span class="px-3 py-1 rounded-full text-sm font-semibold
+                    {{ $application->status == 'pending'  ? 'bg-yellow-100 text-yellow-700' :
+                       ($application->status == 'approved' ? 'bg-green-100 text-green-700'  : 'bg-red-100 text-red-700') }}">
+                    {{ ucfirst($application->status) }}
+                </span>
+                <div class="mt-2">
+                    <a href="{{ route('parent.admissions.show', $application) }}"
+                       class="text-blue-600 hover:underline text-sm">View Details</a>
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout>
+    @else
+    <div class="bg-white rounded-xl shadow p-6 text-center">
+        <p class="text-4xl mb-4">📋</p>
+        <p class="text-gray-600 mb-4">You have not submitted an admission application yet.</p>
+        <a href="{{ route('parent.admissions.create') }}"
+           class="bg-blue-900 text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition">
+            Apply for Admission
+        </a>
+    </div>
+    @endif
+
+</div>
+
+@endsection
