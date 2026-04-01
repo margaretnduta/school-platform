@@ -1,66 +1,387 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+🏫 School Digital Administration and Analytics Platform
+A cloud-based school management system built with Laravel 9, designed specifically for Kenyan secondary schools and private learning institutions. It digitizes and centralizes core administrative operations including admissions, dormitory management, attendance tracking, academic performance, and more.
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+📋 Table of Contents
+Project Overview
+Features
+Tech Stack
+System Requirements
+Installation Guide
+Project Structure
+User Roles
+Module Breakdown
+Database Schema
+How Laravel Works in This Project
+Running the Application
+Default Login Credentials
+Common Errors & Fixes
+Contributing
+📌 Project Overview
+Many secondary schools and private learning institutions in Kenya still rely heavily on manual and semi-digital processes to manage core operations. Paper files, registers, and disconnected spreadsheets lead to:
 
-## About Laravel
+Long admission queues and data loss
+Delayed reporting and lack of transparency
+Increased administrative workload
+No real-time visibility for parents
+This platform solves these problems by providing a single integrated system that handles everything from admissions to dormitory bed allocation — all accessible from a browser.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+✨ Features
+Module	Description
+🔐 Authentication & Roles	Login/Register with role-based access (Admin, Teacher, Parent, Student)
+📋 Admissions	Parents and students apply online; admin reviews, approves, or rejects
+🎓 Student Management	Full CRUD for student records with auto-generated admission numbers
+👨‍🏫 Staff Management	Manage teaching and non-teaching staff with full profiles
+🏫 Class Management	Create classes, assign teachers, track capacity and student counts
+🛏️ Dormitory Management	Auto-generate rooms and beds; gender-based allocation; track occupancy
+✅ Attendance Tracking	Mark attendance per class per day with present/absent/late/excused status
+🍽️ Meal Tracking	Track student meal check-ins per session
+📚 Academic Performance	Record and view student marks and grades per subject and term
+📅 Events & Timetable	Plan and publish school events and class timetables
+👨‍👩‍👦 Parent Portal	Parents view child's progress, attendance, and application status
+📊 Analytics Dashboard	Admin dashboard with stats on students, staff, classes, and admissions
+🛠 Tech Stack
+Layer	Technology
+Backend Framework	Laravel 9 (PHP)
+Frontend	Blade Templates + Tailwind CSS + Alpine.js
+Authentication	Laravel Breeze
+Roles & Permissions	Spatie Laravel Permission
+Database	MySQL
+Package Manager (PHP)	Composer
+Package Manager (JS)	NPM
+Local Server	XAMPP (Apache + MySQL)
+💻 System Requirements
+Before you begin, make sure your machine has the following installed:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Tool	Minimum Version	How to Check
+PHP	8.0+	php -v
+Composer	2.0+	composer -v
+Node.js	16+	node -v
+NPM	8+	npm -v
+MySQL	5.7+	Via XAMPP or standalone
+Recommended: Install XAMPP on Windows — it gives you PHP and MySQL in one package.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+🚀 Installation Guide
+Follow these steps exactly in order to get the project running on your machine.
 
-## Learning Laravel
+Step 1 — Clone or Download the Project
+If using Git:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+git clone https://github.com/your-username/school-platform.git
+cd school-platform
+Or download the ZIP and extract it to C:\xampp\htdocs\school-platform
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Step 2 — Install PHP Dependencies
+composer install --prefer-dist
+This downloads all the Laravel packages the project needs. It may take a few minutes depending on your internet connection.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Step 3 — Install JavaScript Dependencies
+npm install
+Step 4 — Set Up Environment File
+Copy the example environment file:
 
-## Laravel Sponsors
+cp .env.example .env
+On Windows Command Prompt:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+copy .env.example .env
+Then open .env in a text editor and update the database settings:
 
-### Premium Partners
+APP_NAME="School Platform"
+APP_URL=http://127.0.0.1:8000
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=school_platform
+DB_USERNAME=root
+DB_PASSWORD=
+Leave DB_PASSWORD blank if you are using XAMPP's default MySQL (no password set).
 
-## Contributing
+Step 5 — Generate Application Key
+php artisan key:generate
+Step 6 — Create the Database
+Open your browser and go to: http://localhost/phpmyadmin
+Click "New" on the left sidebar
+Type database name: school_platform
+Click Create
+Step 7 — Run Migrations
+This creates all the database tables:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+php artisan migrate
+You should see output like:
 
-## Code of Conduct
+Migrating: 2014_10_12_000000_create_users_table ✓
+Migrating: create_roles_and_permissions_tables ✓
+Migrating: create_students_table ✓
+...
+Step 8 — Seed the Database (Create Admin + Roles)
+php artisan db:seed --class=RolesAndAdminSeeder
+This creates:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+The 4 system roles: admin, teacher, parent, student
+A default admin account (see credentials below)
+Step 9 — Publish Spatie Permission Files (if not done)
+php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
+php artisan migrate
+Step 10 — Start the Development Server
+Open two terminal windows both inside the project folder:
 
-## Security Vulnerabilities
+Terminal 1 — Compile CSS/JS:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+npm run dev
+Terminal 2 — Start Laravel server:
 
-## License
+php artisan serve
+Now open your browser and visit:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+http://127.0.0.1:8000
+You should see the School Platform landing page! 🎉
+
+📁 Project Structure
+Here is a breakdown of the most important folders and files:
+
+school-platform/
+│
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── Admin/              ← All admin module controllers
+│   │   │   │   ├── StudentController.php
+│   │   │   │   ├── StaffController.php
+│   │   │   │   ├── ClassController.php
+│   │   │   │   ├── DormitoryController.php
+│   │   │   │   ├── AdmissionController.php
+│   │   │   │   ├── AttendanceController.php
+│   │   │   │   ├── MealController.php
+│   │   │   │   ├── AcademicController.php
+│   │   │   │   └── EventController.php
+│   │   │   ├── Parent/
+│   │   │   │   └── ParentAdmissionController.php
+│   │   │   ├── Student/
+│   │   │   │   └── StudentAdmissionController.php
+│   │   │   └── DashboardController.php
+│   │   └── Kernel.php              ← Middleware registration
+│   │
+│   └── Models/                     ← Database models (one per table)
+│       ├── User.php
+│       ├── Student.php
+│       ├── Staff.php
+│       ├── SchoolClass.php
+│       ├── Dormitory.php
+│       ├── DormitoryRoom.php
+│       ├── DormitoryBed.php
+│       ├── Admission.php
+│       └── Attendance.php
+│
+├── database/
+│   ├── migrations/                 ← Table blueprints (run with artisan migrate)
+│   └── seeders/
+│       └── RolesAndAdminSeeder.php ← Creates default roles and admin user
+│
+├── resources/
+│   └── views/                      ← All HTML pages (Blade templates)
+│       ├── layouts/
+│       │   ├── admin.blade.php     ← Admin sidebar layout
+│       │   └── portal.blade.php    ← Parent/student portal layout
+│       ├── admin/
+│       │   ├── students/           ← Student CRUD pages
+│       │   ├── staff/              ← Staff CRUD pages
+│       │   ├── classes/            ← Class CRUD pages
+│       │   ├── dormitories/        ← Dormitory management pages
+│       │   ├── admissions/         ← Admin admission review pages
+│       │   └── attendance/         ← Attendance taking and reports
+│       ├── parent/
+│       │   └── admissions/         ← Parent application pages
+│       ├── student/
+│       │   └── admissions/         ← Student application pages
+│       ├── dashboards/
+│       │   ├── admin.blade.php
+│       │   ├── teacher.blade.php
+│       │   ├── parent.blade.php
+│       │   └── student.blade.php
+│       └── auth/                   ← Login and register pages
+│
+└── routes/
+    └── web.php                     ← All URL routes defined here
+👥 User Roles
+The system has 4 roles, each with different access levels:
+
+👨‍💼 Admin
+Full access to all modules
+Reviews and approves/rejects admission applications
+Manages students, staff, classes, dormitories
+Takes attendance and views reports
+Accesses the analytics dashboard
+👨‍🏫 Teacher
+Views their assigned class
+Takes attendance for their class
+Views student academic records
+👨‍👩‍👦 Parent
+Registers and logs in
+Submits admission applications for their child
+Tracks application status (pending / approved / rejected)
+Views child's academic progress and attendance
+🎓 Student
+Registers and logs in
+Submits their own admission application
+Tracks application status
+Views their own results and timetable after enrollment
+📦 Module Breakdown
+🔐 Authentication & Roles
+Powered by Laravel Breeze for login/register
+Spatie Laravel Permission handles roles
+After login, users are automatically redirected to their role-specific dashboard
+Registration requires selecting either Parent or Student role
+📋 Admissions Flow
+Parent/Student registers → Logs in → Submits application form
+        ↓
+Admin sees application in Admissions panel
+        ↓
+Admin clicks "Review" → Assigns class and dormitory → Approves
+        ↓
+Student record auto-created with generated admission number
+        ↓
+Parent/Student sees "Approved" status with admission details
+🛏️ Dormitory System
+Admin creates a dormitory and sets number of beds per room
+System automatically generates 24 rooms with all beds inside each room
+Beds are labelled as Top or Bottom (double decker logic)
+When a student is assigned a dormitory, the system auto-assigns the next available bed
+Occupied beds cannot be reassigned
+When a student leaves, their bed is released and becomes available again
+Each dormitory card shows a live capacity progress bar
+✅ Attendance System
+Admin/Teacher selects a class and a date
+All active students in that class are loaded automatically
+Each student is marked: Present / Absent / Late / Excused
+"Mark All Present" button for quick entry
+Live summary shows counts before saving
+Attendance report can be filtered by class and date range
+Individual student attendance history is viewable
+🗄️ Database Schema
+Here is a summary of all database tables and what they store:
+
+Table	Purpose
+users	All system users (admin, teacher, parent, student)
+roles	Spatie roles (admin, teacher, parent, student)
+model_has_roles	Links users to their roles
+students	All enrolled student records
+staff	Teaching and non-teaching staff
+school_classes	Class names, levels, teachers, capacity
+dormitories	Dormitory names, gender, warden info
+dormitory_rooms	24 rooms per dormitory
+dormitory_beds	Individual beds per room with occupancy status
+admissions	Admission applications with status
+attendances	Daily attendance records per student
+🧠 How Laravel Works in This Project
+If you are new to Laravel, here is how everything connects:
+
+Browser Request
+      ↓
+routes/web.php          ← Decides which controller handles the URL
+      ↓
+Controller (app/Http/Controllers/)  ← Contains the logic
+      ↓
+Model (app/Models/)     ← Talks to the database
+      ↓
+View (resources/views/) ← Renders the HTML shown to the user
+Example: How the Students List Page Works
+User visits /admin/students
+routes/web.php matches this to StudentController@index
+StudentController::index() runs: fetches all students from the database
+Returns view('admin.students.index', compact('students'))
+resources/views/admin/students/index.blade.php loops through students and renders the table
+Key Artisan Commands Used in This Project
+# Create a new controller
+php artisan make:controller Admin/StudentController --resource
+
+# Create a model + migration at the same time
+php artisan make:model Student -m
+
+# Run all pending migrations
+php artisan migrate
+
+# Rollback the last migration
+php artisan migrate:rollback
+
+# Run a specific seeder
+php artisan db:seed --class=RolesAndAdminSeeder
+
+# Clear application cache
+php artisan cache:clear
+php artisan config:clear
+
+# Start the development server
+php artisan serve
+▶️ Running the Application
+Every time you want to work on the project, do this:
+
+Start XAMPP — Make sure Apache and MySQL are running (green)
+
+Open two terminals in the project folder
+
+Terminal 1:
+
+npm run dev
+Terminal 2:
+php artisan serve
+Open browser:
+http://127.0.0.1:8000
+🔑 Default Login Credentials
+After running the seeder, use these to log in as admin:
+
+Field	Value
+Email	admin@school.com
+Password	admin1234
+Important: Change this password immediately after first login in a production environment.
+
+🐛 Common Errors & Fixes
+❌ Target class [role] does not exist
+Cause: Spatie middleware not registered
+Fix: Open app/Http/Kernel.php and add to $routeMiddleware:
+
+'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+❌ SQLSTATE: Connection refused
+Cause: MySQL is not running
+Fix: Open XAMPP Control Panel and start MySQL
+
+❌ composer create-project times out
+Cause: Slow internet connection
+Fix: Increase timeout and use --prefer-dist:
+
+composer config --global process-timeout 2000
+composer create-project laravel/laravel school-platform "9.*" --prefer-dist
+❌ Route [profile.edit] not defined
+Cause: Profile routes missing from web.php
+Fix: Add these inside the auth middleware group in routes/web.php:
+
+Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+❌ php or mysql not recognized in terminal
+Cause: PHP/MySQL not added to system PATH
+Fix (Windows):
+
+Search for "Environment Variables" in Windows
+Edit the Path system variable
+Add C:\xampp\php and C:\xampp\mysql\bin
+Restart your terminal
+❌ Styles not loading (Tailwind CSS not working)
+Cause: Frontend not compiled
+Fix: Make sure npm run dev is running in a terminal
+
+🤝 Contributing
+This project was built as part of an entrepreneurship assignment at The Technical University of Kenya by:
+
+Margaret Wambui Nduta — BTECHIT SCCJ/01497/2022
+
+If you would like to contribute or extend the project:
+
+Fork the repository
+Create a new branch: git checkout -b feature/your-feature-name
+Make your changes and commit: git commit -m "Add your feature"
+Push to your branch: git push origin feature/your-feature-name
+Open a Pull Request
+📄 License
+This project is open source and available under the MIT License.
+
