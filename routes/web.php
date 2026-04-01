@@ -25,25 +25,41 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Central dashboard redirect based on role
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // ── Admin Routes ──────────────────────────────────────────
     Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
+
         Route::get('/dashboard', [DashboardController::class, 'adminDashboard'])->name('dashboard');
+
         Route::resource('students', StudentController::class);
         Route::resource('staff', StaffController::class);
         Route::resource('classes', ClassController::class);
-        Route::resource('attendance', AttendanceController::class);
-        Route::resource('meals', MealController::class);
         Route::resource('academics', AcademicController::class);
         Route::resource('events', EventController::class);
+
+        // Dormitory
         Route::resource('dormitories', DormitoryController::class);
         Route::post('/dormitories/assign-bed', [DormitoryController::class, 'assignBed'])->name('dormitories.assign-bed');
         Route::post('/dormitories/release-bed/{bed}', [DormitoryController::class, 'releaseBed'])->name('dormitories.release-bed');
+
+        // Admissions
         Route::resource('admissions', AdmissionController::class)->except(['create', 'store']);
         Route::post('/admissions/{admission}/approve', [AdmissionController::class, 'approve'])->name('admissions.approve');
         Route::post('/admissions/{admission}/reject', [AdmissionController::class, 'reject'])->name('admissions.reject');
+
+        // Attendance — custom routes BEFORE resource
+        Route::post('/attendance/load', [AttendanceController::class, 'load'])->name('attendance.load');
+        Route::get('/attendance/report', [AttendanceController::class, 'report'])->name('attendance.report');
+        Route::get('/attendance/student/{id}', [AttendanceController::class, 'show'])->name('attendance.student');
+        Route::resource('attendance', AttendanceController::class);
+
+        // Meals — custom routes BEFORE resource
+        Route::post('/meals/load', [MealController::class, 'load'])->name('meals.load');
+        Route::get('/meals/report', [MealController::class, 'report'])->name('meals.report');
+        Route::get('/meals/student/{id}', [MealController::class, 'studentProfile'])->name('meals.student');
+        Route::resource('meals', MealController::class);
+
     });
 
     // ── Teacher Routes ────────────────────────────────────────
