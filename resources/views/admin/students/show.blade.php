@@ -97,25 +97,33 @@
     </div>
 
     {{-- Quick Links --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <a href="{{ route('admin.attendance.student', $student->id) }}"
-           class="bg-white rounded-xl shadow p-5 flex items-center space-x-4 hover:shadow-md transition">
-            <span class="text-3xl">✅</span>
-            <div>
-                <p class="font-semibold text-gray-700">View Attendance</p>
-                <p class="text-xs text-gray-400">See full attendance history</p>
-            </div>
-        </a>
-        <a href="{{ route('admin.meals.student', $student->id) }}"
-           class="bg-white rounded-xl shadow p-5 flex items-center space-x-4 hover:shadow-md transition">
-            <span class="text-3xl">🍽️</span>
-            <div>
-                <p class="font-semibold text-gray-700">View Meal Profile</p>
-                <p class="text-xs text-gray-400">See meal history and stats</p>
-            </div>
-        </a>
-    </div>
-
+   {{-- Quick Links --}}
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <a href="{{ route('admin.attendance.student', $student->id) }}"
+       class="bg-white rounded-xl shadow p-5 flex items-center space-x-4 hover:shadow-md transition">
+        <span class="text-3xl flex-shrink-0">✅</span>
+        <div>
+            <p class="font-semibold text-gray-700">Attendance</p>
+            <p class="text-xs text-gray-400">View attendance history</p>
+        </div>
+    </a>
+    <a href="{{ route('admin.meals.student', $student->id) }}"
+       class="bg-white rounded-xl shadow p-5 flex items-center space-x-4 hover:shadow-md transition">
+        <span class="text-3xl flex-shrink-0">🍽️</span>
+        <div>
+            <p class="font-semibold text-gray-700">Meal Profile</p>
+            <p class="text-xs text-gray-400">View meal history and stats</p>
+        </div>
+    </a>
+    <a href="{{ route('admin.academics.report-card', $student->id) }}"
+       class="bg-white rounded-xl shadow p-5 flex items-center space-x-4 hover:shadow-md transition">
+        <span class="text-3xl flex-shrink-0">📄</span>
+        <div>
+            <p class="font-semibold text-gray-700">Report Card</p>
+            <p class="text-xs text-gray-400">View academic performance</p>
+        </div>
+    </a>
+</div>
 </div>
 
 @endsection

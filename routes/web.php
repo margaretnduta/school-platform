@@ -35,7 +35,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('students', StudentController::class);
         Route::resource('staff', StaffController::class);
         Route::resource('classes', ClassController::class);
-        Route::resource('academics', AcademicController::class);
         Route::resource('events', EventController::class);
 
         // Dormitory
@@ -48,17 +47,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/admissions/{admission}/approve', [AdmissionController::class, 'approve'])->name('admissions.approve');
         Route::post('/admissions/{admission}/reject', [AdmissionController::class, 'reject'])->name('admissions.reject');
 
-        // Attendance — custom routes BEFORE resource
+        // Attendance — custom before resource
         Route::post('/attendance/load', [AttendanceController::class, 'load'])->name('attendance.load');
         Route::get('/attendance/report', [AttendanceController::class, 'report'])->name('attendance.report');
         Route::get('/attendance/student/{id}', [AttendanceController::class, 'show'])->name('attendance.student');
         Route::resource('attendance', AttendanceController::class);
 
-        // Meals — custom routes BEFORE resource
+        // Meals — custom before resource
         Route::post('/meals/load', [MealController::class, 'load'])->name('meals.load');
         Route::get('/meals/report', [MealController::class, 'report'])->name('meals.report');
         Route::get('/meals/student/{id}', [MealController::class, 'studentProfile'])->name('meals.student');
         Route::resource('meals', MealController::class);
+
+        // Academics — custom before resource
+        Route::get('/academics/enter-marks', [AcademicController::class, 'enterMarks'])->name('academics.enter-marks');
+        Route::post('/academics/save-marks', [AcademicController::class, 'saveMarks'])->name('academics.save-marks');
+        Route::get('/academics/class-results', [AcademicController::class, 'classResults'])->name('academics.class-results');
+        Route::get('/academics/report-card/{id}', [AcademicController::class, 'reportCard'])->name('academics.report-card');
+        Route::resource('academics', AcademicController::class);
 
     });
 

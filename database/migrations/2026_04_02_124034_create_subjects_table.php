@@ -1,0 +1,28 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('subjects', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('code')->unique();
+            $table->string('class');
+            $table->integer('total_marks')->default(100);
+            $table->integer('pass_marks')->default(50);
+            $table->foreignId('teacher_id')->nullable()->constrained('staff')->onDelete('set null');
+            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->timestamps();
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('subjects');
+    }
+};
