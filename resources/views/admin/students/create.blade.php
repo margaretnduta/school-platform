@@ -18,7 +18,8 @@
         </div>
     @endif
 
-    <form action="{{ route('admin.students.store') }}" method="POST" id="studentForm">
+    <form action="{{ route('admin.students.store') }}" method="POST"
+          enctype="multipart/form-data" id="studentForm">
         @csrf
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -102,11 +103,11 @@
                 </select>
             </div>
 
-            {{-- Dormitory Dropdown — filters by gender --}}
+            {{-- Dormitory Dropdown --}}
             <div class="md:col-span-2">
                 <label class="block text-sm font-medium text-gray-700 mb-1">
                     Dormitory
-                    <span class="text-xs text-gray-400 ml-1">(Select gender first — only matching dormitories will show)</span>
+                    <span class="text-xs text-gray-400 ml-1">(Select gender first)</span>
                 </label>
                 <select name="dormitory_id" id="dormitorySelect"
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -117,8 +118,7 @@
                                 data-available="{{ $dormitory->available_beds }}"
                                 style="display:none"
                                 {{ old('dormitory_id') == $dormitory->id ? 'selected' : '' }}>
-                            {{ $dormitory->name }}
-                            ({{ ucfirst($dormitory->gender) }})
+                            {{ $dormitory->name }} ({{ ucfirst($dormitory->gender) }})
                             — {{ $dormitory->available_beds }} beds available
                         </option>
                     @endforeach
@@ -126,6 +126,26 @@
                 <p id="noDormMessage" class="text-xs text-red-500 mt-1 hidden">
                     No available dormitories for this gender.
                 </p>
+            </div>
+
+            {{-- Photo Upload --}}
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Student Photo
+                    <span class="text-xs text-gray-400 ml-1">(JPG or PNG, max 2MB)</span>
+                </label>
+                <div class="flex items-center space-x-4">
+                    <div id="photoPreview"
+                         class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center text-gray-400 text-2xl overflow-hidden border-2 border-gray-300">
+                        📷
+                    </div>
+                    <div class="flex-1">
+                        <input type="file" name="photo" id="photoInput"
+                               accept="image/jpeg,image/png,image/jpg"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                        <p class="text-xs text-gray-400 mt-1">Click to upload a photo. If not uploaded, initials will be shown.</p>
+                    </div>
+                </div>
             </div>
 
             <div class="md:col-span-2">
@@ -151,10 +171,11 @@
 </div>
 
 <script>
-    const genderSelect     = document.getElementById('genderSelect');
-    const dormitorySelect  = document.getElementById('dormitorySelect');
-    const noDormMessage    = document.getElementById('noDormMessage');
-    const allOptions       = dormitorySelect.querySelectorAll('option[data-gender]');
+    // Gender → Dormitory filter
+    const genderSelect    = document.getElementById('genderSelect');
+    const dormitorySelect = document.getElementById('dormitorySelect');
+    const noDormMessage   = document.getElementById('noDormMessage');
+    const allOptions      = dormitorySelect.querySelectorAll('option[data-gender]');
 
     genderSelect.addEventListener('change', function () {
         const selectedGender = this.value;
@@ -185,6 +206,20 @@
     if (genderSelect.value) {
         genderSelect.dispatchEvent(new Event('change'));
     }
+
+    // Photo preview
+    document.getElementById('photoInput').addEventListener('change', function () {
+        const file    = this.files[0];
+        const preview = document.getElementById('photoPreview');
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                preview.innerHTML = `<img src="${e.target.result}"
+                    class="w-full h-full object-cover rounded-full">`;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 </script>
 
 @endsection

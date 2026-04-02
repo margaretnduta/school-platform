@@ -7,7 +7,9 @@ use App\Models\Student;
 use App\Models\Dormitory;
 use App\Models\DormitoryBed;
 use App\Models\DormitoryRoom;
+use App\Models\SchoolClass;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class StudentController extends Controller
 {
@@ -33,10 +35,16 @@ class StudentController extends Controller
             'guardian_name'  => 'required|string|max:255',
             'guardian_phone' => 'required|string|max:20',
             'dormitory_id'   => 'nullable|exists:dormitories,id',
+            'photo'          => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        // Auto generate admission number
         $admissionNumber = 'STU-' . strtoupper(substr($request->first_name, 0, 2)) . '-' . date('Y') . '-' . str_pad(Student::count() + 1, 4, '0', STR_PAD_LEFT);
+
+        // Handle photo upload
+        $photoPath = null;
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->store('photos/students', 'public');
+        }
 
         $student = Student::create([
             'admission_number' => $admissionNumber,
@@ -52,9 +60,9 @@ class StudentController extends Controller
             'class'            => $request->class,
             'address'          => $request->address,
             'status'           => 'active',
+            'photo'            => $photoPath,
         ]);
 
-        // Auto assign bed if dormitory selected
         if ($request->dormitory_id) {
             $this->autoAssignBed($student, $request->dormitory_id);
         }
@@ -90,7 +98,18 @@ class StudentController extends Controller
             'guardian_name'  => 'required|string|max:255',
             'guardian_phone' => 'required|string|max:20',
             'dormitory_id'   => 'nullable|exists:dormitories,id',
+            'photo'          => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
+
+        // Handle photo upload
+        $photoPath = $student->photo;
+        if ($request->hasFile('photo')) {
+            // Delete old photo if exists
+            if ($student->photo) {
+                Storage::disk('public')->delete($student->photo);
+            }
+            $photoPath = $request->file('photo')->store('photos/students', 'public');
+        }
 
         $student->update([
             'first_name'     => $request->first_name,
@@ -105,11 +124,10 @@ class StudentController extends Controller
             'class'          => $request->class,
             'address'        => $request->address,
             'status'         => $request->status,
+            'photo'          => $photoPath,
         ]);
 
-        // Handle dormitory change
         if ($request->dormitory_id) {
-            // Release old bed if exists
             $oldBed = DormitoryBed::where('student_id', $student->id)->first();
             if ($oldBed && $oldBed->dormitory_id != $request->dormitory_id) {
                 $this->releaseBed($oldBed);
@@ -125,17 +143,18 @@ class StudentController extends Controller
 
     public function destroy(Student $student)
     {
-        // Release bed before deleting
         $bed = DormitoryBed::where('student_id', $student->id)->first();
-        if ($bed) {
-            $this->releaseBed($bed);
+        if ($bed) $this->releaseBed($bed);
+
+        // Delete photo
+        if ($student->photo) {
+            Storage::disk('public')->delete($student->photo);
         }
+
         $student->delete();
         return redirect()->route('admin.students.index')
                          ->with('success', 'Student deleted successfully!');
     }
-
-    // ─── Private Helpers ────────────────────────────────────────────
 
     private function autoAssignBed(Student $student, $dormitoryId)
     {
@@ -144,7 +163,6 @@ class StudentController extends Controller
                                     ->whereNull('student_id')
                                     ->with('room', 'dormitory')
                                     ->first();
-
         if (!$availableBed) return;
 
         $availableBed->update([
@@ -152,14 +170,12 @@ class StudentController extends Controller
             'status'     => 'occupied',
         ]);
 
-        // Update room occupied count
         $room = $availableBed->room;
         $room->increment('occupied_beds');
         if ($room->occupied_beds >= $room->total_beds) {
             $room->update(['status' => 'full']);
         }
 
-        // Save dormitory info on student record
         $student->update([
             'dormitory' => $availableBed->dormitory->name .
                            ' | ' . $room->room_number .
