@@ -5,34 +5,37 @@
 @section('content')
 
 @if(session('success'))
-    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-        {{ session('success') }}
-    </div>
+    <x-alert variant="success" dismissible>
+        <strong>Success!</strong> {{ session('success') }}
+    </x-alert>
 @endif
 
 <div class="flex justify-between items-center mb-6">
-    <h3 class="text-lg font-semibold text-gray-700">All Students</h3>
-    <a href="{{ route('admin.students.create') }}"
-       class="bg-blue-900 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition">
-        + Add Student
+    <div>
+        <p class="text-gray-600">Manage and track all student information</p>
+    </div>
+    <a href="{{ route('admin.students.create') }}" class="btn btn-primary">
+        <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        Add Student
     </a>
 </div>
 
-<div class="bg-white rounded-xl shadow overflow-x-auto">
-    <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
+<x-card>
+    <div class="overflow-x-auto">
+    <table class="table w-full">
+        <thead class="table-head">
             <tr>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase w-12">Photo</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Adm. No</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Gender</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Class</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Guardian</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                <th class="w-12">Photo</th>
+                <th>Admission No</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Class</th>
+                <th>Guardian</th>
+                <th>Status</th>
+                <th>Actions</th>
             </tr>
         </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
+        <tbody class="table-body">
             @forelse($students as $student)
             <tr class="hover:bg-gray-50">
                 <td class="px-4 py-2">
@@ -52,35 +55,43 @@
                     {{ $student->guardian_name }}
                 </td>
                 <td class="px-4 py-3">
-                    <span class="px-2 py-1 text-xs rounded-full whitespace-nowrap
-                        {{ $student->status === 'active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                    <x-badge :variant="$student->status === 'active' ? 'success' : 'danger'">
                         {{ ucfirst($student->status) }}
-                    </span>
+                    </x-badge>
                 </td>
                 <td class="px-4 py-3 text-sm whitespace-nowrap space-x-2">
-                    <a href="{{ route('admin.students.show', $student) }}"
-                       class="text-blue-600 hover:underline">View</a>
-                    <a href="{{ route('admin.students.edit', $student) }}"
-                       class="text-yellow-600 hover:underline">Edit</a>
-                    <form action="{{ route('admin.students.destroy', $student) }}"
-                          method="POST" class="inline"
-                          onsubmit="return confirm('Delete this student?')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="text-red-600 hover:underline">Delete</button>
-                    </form>
+                    <div class="flex items-center gap-2">
+                        <a href="{{ route('admin.students.show', $student) }}" class="btn btn-white btn-sm">
+                            View
+                        </a>
+                        <a href="{{ route('admin.students.edit', $student) }}" class="btn btn-white btn-sm">
+                            Edit
+                        </a>
+                        <form action="{{ route('admin.students.destroy', $student) }}" method="POST" class="inline" onsubmit="return confirm('Delete this student?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
                 </td>
             </tr>
             @empty
             <tr>
-                <td colspan="8" class="px-6 py-8 text-center text-gray-400">
-                    No students found. Add your first student!
+                <td colspan="8" class="px-6 py-12 text-center">
+                    <div class="text-gray-500 text-sm">No students found</div>
                 </td>
             </tr>
             @endforelse
         </tbody>
     </table>
-    <div class="px-6 py-4">{{ $students->links() }}</div>
-</div>
+    </div>
+    @if($students->hasPages())
+        <x-card-footer>
+            {{ $students->links() }}
+        </x-card-footer>
+    @endif
+</x-card>
 
 @endsection

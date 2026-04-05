@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\Admin\ClassController;
@@ -10,14 +11,23 @@ use App\Http\Controllers\Admin\AdmissionController;
 use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\MealController;
 use App\Http\Controllers\Admin\AcademicController;
-use App\Http\Controllers\Admin\EventController;
+use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Parent\ParentAdmissionController;
 use App\Http\Controllers\Student\StudentAdmissionController;
+use App\Models\Event;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    $upcomingEvents = Event::where('is_public', true)
+        ->orderBy('event_date', 'asc')
+        ->limit(3)
+        ->get();
+    return view('welcome', compact('upcomingEvents'));
 });
+
+// Public Events Routes
+Route::get('/events', [EventController::class, 'index'])->name('events.index');
+Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
@@ -35,7 +45,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('students', StudentController::class);
         Route::resource('staff', StaffController::class);
         Route::resource('classes', ClassController::class);
-        Route::resource('events', EventController::class);
+        Route::resource('events', AdminEventController::class);
 
         // Dormitory
         Route::resource('dormitories', DormitoryController::class);

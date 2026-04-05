@@ -5,99 +5,103 @@
 @section('content')
 
 @if(session('success'))
-    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-        {{ session('success') }}
-    </div>
+    <x-alert variant="success" dismissible>
+        <strong>Success!</strong> {{ session('success') }}
+    </x-alert>
 @endif
 
 <div class="flex justify-between items-center mb-6">
-    <h3 class="text-lg font-semibold text-gray-700">All Classes</h3>
-    <a href="{{ route('admin.classes.create') }}"
-       class="bg-blue-900 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition">
-        + Add Class
+    <div>
+        <p class="text-gray-600">Manage school classes and assign teachers</p>
+    </div>
+    <a href="{{ route('admin.classes.create') }}" class="btn btn-primary">
+        <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        Add Class
     </a>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<x-grid cols="3" gap="6">
     @forelse($classes as $class)
-    <div class="bg-white rounded-xl shadow p-6">
-
-        <div class="flex justify-between items-start mb-3">
+    <x-card>
+        <x-card-header>
             <div>
-                <h4 class="text-lg font-bold text-blue-900">{{ $class->name }}</h4>
+                <h4 class="text-lg font-bold text-primary-900">{{ $class->name }}</h4>
                 <p class="text-sm text-gray-500">Level: {{ $class->level }}</p>
             </div>
-            <span class="text-xs px-2 py-1 rounded-full
-                {{ $class->status == 'active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+            <x-badge :variant="$class->status == 'active' ? 'success' : 'danger'">
                 {{ ucfirst($class->status) }}
-            </span>
-        </div>
+            </x-badge>
+        </x-card-header>
 
-        <div class="space-y-2 text-sm text-gray-600 mb-4">
-            <div class="flex justify-between">
-                <span>Stream:</span>
-                <span class="font-semibold">{{ $class->stream ?? 'N/A' }}</span>
+        <x-card-body>
+            <div class="space-y-3 text-sm text-gray-600">
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Stream:</span>
+                    <span class="font-semibold text-gray-900">{{ $class->stream ?? 'N/A' }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Class Teacher:</span>
+                    <span class="font-semibold text-gray-900">{{ $class->classTeacher?->full_name ?? 'Not Assigned' }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Room:</span>
+                    <span class="font-semibold text-gray-900">{{ $class->room_number ?? 'N/A' }}</span>
+                </div>
+                <div class="flex justify-between border-t pt-3">
+                    <span class="text-gray-600">Students:</span>
+                    <span class="font-semibold text-gray-900">{{ $class->student_count }} / {{ $class->capacity }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Available:</span>
+                    <span class="font-semibold {{ $class->available_spots > 0 ? 'text-success-600' : 'text-danger-600' }}">
+                        {{ $class->available_spots }} spots
+                    </span>
+                </div>
             </div>
-            <div class="flex justify-between">
-                <span>Class Teacher:</span>
-                <span class="font-semibold">{{ $class->classTeacher?->full_name ?? 'Not Assigned' }}</span>
-            </div>
-            <div class="flex justify-between">
-                <span>Room:</span>
-                <span class="font-semibold">{{ $class->room_number ?? 'N/A' }}</span>
-            </div>
-            <div class="flex justify-between">
-                <span>Students:</span>
-                <span class="font-semibold">{{ $class->student_count }} / {{ $class->capacity }}</span>
-            </div>
-            <div class="flex justify-between">
-                <span>Available Spots:</span>
-                <span class="font-semibold {{ $class->available_spots > 0 ? 'text-green-600' : 'text-red-600' }}">
-                    {{ $class->available_spots }}
-                </span>
-            </div>
-        </div>
+        </x-card-body>
 
         {{-- Capacity Bar --}}
         @if($class->capacity > 0)
-        <div class="mb-4">
-            <div class="w-full bg-gray-200 rounded-full h-2">
-                <div class="bg-blue-600 h-2 rounded-full"
-                     style="width: {{ min(($class->student_count / $class->capacity) * 100, 100) }}%">
+        <x-card-body>
+            <div class="space-y-2">
+                <div class="flex justify-between text-xs">
+                    <span class="text-gray-600">Capacity</span>
+                    <span class="font-semibold">{{ round(($class->student_count / $class->capacity) * 100) }}%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="bg-gradient-to-r from-primary-500 to-primary-600 h-2 rounded-full transition-all" 
+                         style="width: {{ min(($class->student_count / $class->capacity) * 100, 100) }}%">
+                    </div>
                 </div>
             </div>
-            <p class="text-xs text-gray-500 mt-1">
-                {{ round(($class->student_count / $class->capacity) * 100) }}% full
-            </p>
-        </div>
+        </x-card-body>
         @endif
 
-        <div class="flex space-x-2">
-            <a href="{{ route('admin.classes.show', $class) }}"
-               class="flex-1 text-center bg-blue-900 text-white py-2 rounded-lg text-sm hover:bg-blue-800 transition">
+        <x-card-footer>
+            <a href="{{ route('admin.classes.show', $class) }}" class="btn btn-primary btn-sm">
                 View Students
             </a>
-            <a href="{{ route('admin.classes.edit', $class) }}"
-               class="flex-1 text-center bg-yellow-500 text-white py-2 rounded-lg text-sm hover:bg-yellow-400 transition">
+            <a href="{{ route('admin.classes.edit', $class) }}" class="btn btn-white btn-sm">
                 Edit
             </a>
-            <form action="{{ route('admin.classes.destroy', $class) }}" method="POST"
-                  onsubmit="return confirm('Delete this class?')">
+            <form action="{{ route('admin.classes.destroy', $class) }}" method="POST" onsubmit="return confirm('Delete this class?')" class="inline">
                 @csrf
                 @method('DELETE')
-                <button type="submit"
-                        class="bg-red-500 text-white px-3 py-2 rounded-lg text-sm hover:bg-red-400 transition">
-                    Del
+                <button type="submit" class="btn btn-danger btn-sm">
+                    Delete
                 </button>
             </form>
-        </div>
-
-    </div>
+        </x-card-footer>
+    </x-card>
     @empty
-    <div class="col-span-3 text-center py-12 text-gray-400">
-        No classes found. Create your first class!
+    <div class="col-span-3">
+        <x-card>
+            <x-card-body class="text-center py-12">
+                <p class="text-gray-500">No classes found. Create your first class to get started.</p>
+            </x-card-body>
+        </x-card>
     </div>
     @endforelse
-</div>
+</x-grid>
 
 @endsection
