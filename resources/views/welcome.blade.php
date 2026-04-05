@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>School Digital Administration Platform</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-white">
 
@@ -32,84 +33,111 @@
     </nav>
 
     {{-- Hero Carousel --}}
-    <div class="relative w-full overflow-hidden bg-black" x-data="heroCarousel()" x-init="init()" style="height: 600px;">
-        <!-- Carousel Slides Container -->
+    <div class="relative w-full overflow-hidden" x-data="heroCarousel()" x-init="init()" style="height: 600px;">
         <div class="relative w-full h-full">
+
             <!-- Slide 1 -->
-            <div class="absolute inset-0 transition-opacity duration-1000 ease-in-out" :class="{ 'opacity-100': currentSlide === 0, 'opacity-0 pointer-events-none': currentSlide !== 0 }">
-                <img src="{{ asset('images/carousel/slide-1.jpg') }}" alt="Slide 1" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-black/40"></div>
-                <div class="relative h-full flex items-center justify-center px-4 sm:px-6 lg:px-8">
-                    <div class="max-w-3xl mx-auto text-center text-white">
-                        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 mb-6">
-                            <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
-                            <span class="text-sm font-medium">Welcome to the Future of School Management</span>
+            <div class="absolute inset-0 transition-opacity duration-1000 ease-in-out"
+                 :class="{ 'opacity-100 z-10': currentSlide === 0, 'opacity-0 z-0': currentSlide !== 0 }">
+                <!-- Image fills the full slide -->
+                <img src="/images/carousel/slide-1.jpg"
+                     alt="Slide 1"
+                     class="absolute inset-0 w-full h-full object-cover">
+                <!-- Strong dark overlay for text visibility -->
+                <div class="absolute inset-0 bg-black/60"></div>
+                <!-- Content sits above overlay -->
+                <div class="absolute inset-0 flex items-center justify-center px-4 sm:px-6 lg:px-8 z-20">
+                    <div class="max-w-3xl mx-auto text-center">
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 mb-4 sm:mb-6">
+                            <span class="w-2 h-2 rounded-full bg-white animate-pulse flex-shrink-0"></span>
+                            <span class="text-white text-xs sm:text-sm font-medium">Welcome to the Future of School Management</span>
                         </div>
-                        <h2 class="text-4xl md:text-6xl font-bold mb-4 leading-tight">Digital Administration Made Simple</h2>
-                        <p class="text-white/90 text-lg md:text-xl mb-8 leading-relaxed">A modern, integrated platform for managing school admissions, attendance, academics, dormitories, and more — designed specifically for Kenyan secondary schools.</p>
-                        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                            <a href="{{ route('register') }}" class="btn btn-white btn-lg">Apply for Admission</a>
-                            <a href="#features" class="btn btn-primary-outline btn-lg">Learn More</a>
+                        <h2 class="text-2xl sm:text-4xl md:text-6xl font-bold text-white mb-3 sm:mb-4 leading-tight drop-shadow-xl">
+                            Digital Administration Made Simple
+                        </h2>
+                        <p class="text-white/95 text-sm sm:text-lg md:text-xl mb-6 sm:mb-8 leading-relaxed drop-shadow-lg max-w-2xl mx-auto">
+                            A modern, integrated platform for managing school admissions, attendance, academics,
+                            dormitories, and more — designed specifically for Kenyan secondary schools.
+                        </p>
+                        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+                            <a href="{{ route('register') }}" class="btn btn-white btn-lg w-full sm:w-auto">Apply for Admission</a>
+                            <a href="#features" class="btn btn-white btn-lg border border-white w-full sm:w-auto">Learn More</a>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Slide 2 -->
-            <div class="absolute inset-0 transition-opacity duration-1000 ease-in-out" :class="{ 'opacity-100': currentSlide === 1, 'opacity-0 pointer-events-none': currentSlide !== 1 }">
-                <img src="{{ asset('images/carousel/slide-2.jpg') }}" alt="Slide 2" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-black/40"></div>
-                <div class="relative h-full flex items-center justify-center px-4 sm:px-6 lg:px-8">
-                    <div class="max-w-3xl mx-auto text-center text-white">
-                        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 mb-6">
-                            <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
-                            <span class="text-sm font-medium">For Students & Parents</span>
+            <div class="absolute inset-0 transition-opacity duration-1000 ease-in-out"
+                 :class="{ 'opacity-100 z-10': currentSlide === 1, 'opacity-0 z-0': currentSlide !== 1 }">
+                <img src="/images/carousel/slide-2.jpg"
+                     alt="Slide 2"
+                     class="absolute inset-0 w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black/60"></div>
+                <div class="absolute inset-0 flex items-center justify-center px-4 sm:px-6 lg:px-8 z-20">
+                    <div class="max-w-3xl mx-auto text-center">
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 mb-4 sm:mb-6">
+                            <span class="w-2 h-2 rounded-full bg-white animate-pulse flex-shrink-0"></span>
+                            <span class="text-white text-xs sm:text-sm font-medium">For Students & Parents</span>
                         </div>
-                        <h2 class="text-4xl md:text-6xl font-bold mb-4 leading-tight">Easy Admission Process</h2>
-                        <p class="text-white/90 text-lg md:text-xl mb-8 leading-relaxed">Apply online for school admission with a streamlined digital process. Track your application status in real-time and get instant updates.</p>
-                        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                            <a href="{{ route('register') }}" class="btn btn-white btn-lg">Apply for Admission</a>
-                            <a href="#features" class="btn btn-primary-outline btn-lg">Learn More</a>
+                        <h2 class="text-2xl sm:text-4xl md:text-6xl font-bold text-white mb-3 sm:mb-4 leading-tight drop-shadow-xl">
+                            Easy Admission Process
+                        </h2>
+                        <p class="text-white/95 text-sm sm:text-lg md:text-xl mb-6 sm:mb-8 leading-relaxed drop-shadow-lg max-w-2xl mx-auto">
+                            Apply online for school admission with a streamlined digital process.
+                            Track your application status in real-time and get instant updates.
+                        </p>
+                        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+                            <a href="{{ route('register') }}" class="btn btn-white btn-lg w-full sm:w-auto">Apply for Admission</a>
+                            <a href="#features" class="btn btn-white btn-lg border border-white w-full sm:w-auto">Learn More</a>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Slide 3 -->
-            <div class="absolute inset-0 transition-opacity duration-1000 ease-in-out" :class="{ 'opacity-100': currentSlide === 2, 'opacity-0 pointer-events-none': currentSlide !== 2 }">
-                <img src="{{ asset('images/carousel/slide-3.jpg') }}" alt="Slide 3" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-black/40"></div>
-                <div class="relative h-full flex items-center justify-center px-4 sm:px-6 lg:px-8">
-                    <div class="max-w-3xl mx-auto text-center text-white">
-                        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 mb-6">
-                            <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
-                            <span class="text-sm font-medium">For School Administration</span>
+            <div class="absolute inset-0 transition-opacity duration-1000 ease-in-out"
+                 :class="{ 'opacity-100 z-10': currentSlide === 2, 'opacity-0 z-0': currentSlide !== 2 }">
+                <img src="/images/carousel/slide-3.jpg"
+                     alt="Slide 3"
+                     class="absolute inset-0 w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black/60"></div>
+                <div class="absolute inset-0 flex items-center justify-center px-4 sm:px-6 lg:px-8 z-20">
+                    <div class="max-w-3xl mx-auto text-center">
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 mb-4 sm:mb-6">
+                            <span class="w-2 h-2 rounded-full bg-white animate-pulse flex-shrink-0"></span>
+                            <span class="text-white text-xs sm:text-sm font-medium">For School Administration</span>
                         </div>
-                        <h2 class="text-4xl md:text-6xl font-bold mb-4 leading-tight">Comprehensive Management Tools</h2>
-                        <p class="text-white/90 text-lg md:text-xl mb-8 leading-relaxed">Manage students, staff, classes, dormitories, attendance, meals, and academic records all in one centralized platform.</p>
-                        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                            <a href="{{ route('register') }}" class="btn btn-white btn-lg">Apply for Admission</a>
-                            <a href="#features" class="btn btn-primary-outline btn-lg">Learn More</a>
+                        <h2 class="text-2xl sm:text-4xl md:text-6xl font-bold text-white mb-3 sm:mb-4 leading-tight drop-shadow-xl">
+                            Comprehensive Management Tools
+                        </h2>
+                        <p class="text-white/95 text-sm sm:text-lg md:text-xl mb-6 sm:mb-8 leading-relaxed drop-shadow-lg max-w-2xl mx-auto">
+                            Manage students, staff, classes, dormitories, attendance, meals,
+                            and academic records all in one centralized platform.
+                        </p>
+                        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+                            <a href="{{ route('register') }}" class="btn btn-white btn-lg w-full sm:w-auto">Apply for Admission</a>
+                            <a href="#features" class="btn btn-white btn-lg border border-white w-full sm:w-auto">Learn More</a>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Navigation Buttons -->
-            <button @click="prev()" class="absolute left-4 top-1/2 transform -translate-y-1/2 z-20 p-3 rounded-full bg-white/20 hover:bg-white/30 text-white transition-all duration-200 backdrop-blur-sm" aria-label="Previous slide">
+            <button @click="prev()" class="absolute left-4 top-1/2 transform -translate-y-1/2 z-30 p-3 rounded-full bg-white/30 hover:bg-white/50 text-white transition-all duration-200 backdrop-blur-sm" aria-label="Previous slide">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                 </svg>
             </button>
 
-            <button @click="next()" class="absolute right-4 top-1/2 transform -translate-y-1/2 z-20 p-3 rounded-full bg-white/20 hover:bg-white/30 text-white transition-all duration-200 backdrop-blur-sm" aria-label="Next slide">
+            <button @click="next()" class="absolute right-4 top-1/2 transform -translate-y-1/2 z-30 p-3 rounded-full bg-white/30 hover:bg-white/50 text-white transition-all duration-200 backdrop-blur-sm" aria-label="Next slide">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                 </svg>
             </button>
 
             <!-- Dot Navigation -->
-            <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 flex gap-2">
+            <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-30 flex gap-2">
                 <button @click="currentSlide = 0" class="transition-all duration-300 rounded-full" :class="{ 'bg-white w-3 h-3': currentSlide === 0, 'bg-white/50 w-2 h-2': currentSlide !== 0 }" aria-label="Go to slide 1"></button>
                 <button @click="currentSlide = 1" class="transition-all duration-300 rounded-full" :class="{ 'bg-white w-3 h-3': currentSlide === 1, 'bg-white/50 w-2 h-2': currentSlide !== 1 }" aria-label="Go to slide 2"></button>
                 <button @click="currentSlide = 2" class="transition-all duration-300 rounded-full" :class="{ 'bg-white w-3 h-3': currentSlide === 2, 'bg-white/50 w-2 h-2': currentSlide !== 2 }" aria-label="Go to slide 3"></button>
@@ -140,15 +168,6 @@
                     },
                     restartAutoPlay() {
                         clearInterval(this.autoPlayInterval);
-                        this.startAutoPlay();
-                    }
-                }
-            }
-        </script>
-    </div>
-                    },
-                    restartAutoPlay() {
-                        clearInterval(this.interval);
                         this.startAutoPlay();
                     }
                 }
@@ -392,9 +411,6 @@
             </div>
         </div>
     </footer>
-
-</body>
-</html>
 
 </body>
 </html>

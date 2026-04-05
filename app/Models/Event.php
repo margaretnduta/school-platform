@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Event extends Model
 {
@@ -43,6 +44,29 @@ class Event extends Model
     public function getFormattedTimeAttribute()
     {
         return $this->event_date->format('h:i A');
+    }
+
+    /**
+     * Get automatic status based on event date and current date
+     * Returns: upcoming, ongoing, completed, or cancelled
+     */
+    public function getStatusAttribute()
+    {
+        // If status is explicitly set to cancelled, keep it
+        if ($this->attributes['status'] === 'cancelled') {
+            return 'cancelled';
+        }
+
+        $now = now();
+        $eventDate = $this->event_date;
+
+        if ($eventDate->isFuture()) {
+            return 'upcoming';
+        } elseif ($eventDate->isToday()) {
+            return 'ongoing';
+        } else {
+            return 'completed';
+        }
     }
 
     /**

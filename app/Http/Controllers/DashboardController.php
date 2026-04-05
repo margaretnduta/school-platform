@@ -23,7 +23,24 @@ class DashboardController extends Controller
 
     public function adminDashboard()
     {
-        return view('dashboards.admin');
+        $studentCount = \App\Models\Student::count();
+        $staffCount = \App\Models\Staff::count();
+        $classCount = \App\Models\SchoolClass::count();
+        $pendingAdmissions = \App\Models\Admission::where('status', 'pending')->count();
+        $recentEvents = \App\Models\Event::where('is_public', true)
+                                         ->orderBy('created_at', 'desc')
+                                         ->limit(5)
+                                         ->get();
+        
+        // Exam data
+        $upcomingExams = \App\Models\Exam::where('status', 'planned')
+                                         ->orderBy('start_date', 'asc')
+                                         ->limit(5)
+                                         ->get();
+        $ongoingExams = \App\Models\Exam::where('status', 'ongoing')->count();
+        $completedExams = \App\Models\Exam::where('status', 'completed')->count();
+
+        return view('dashboards.admin', compact('studentCount', 'staffCount', 'classCount', 'pendingAdmissions', 'recentEvents', 'upcomingExams', 'ongoingExams', 'completedExams'));
     }
 
     public function teacherDashboard()

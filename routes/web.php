@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\MealController;
 use App\Http\Controllers\Admin\AcademicController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
+use App\Http\Controllers\Admin\ExamController;
 use App\Http\Controllers\Parent\ParentAdmissionController;
 use App\Http\Controllers\Student\StudentAdmissionController;
 use App\Models\Event;
@@ -47,13 +48,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('classes', ClassController::class);
         Route::resource('events', AdminEventController::class);
 
+        // Exams
+        Route::resource('exams', ExamController::class);
+        Route::get('/exams/{exam}/student/{student}/report', [ExamController::class, 'studentReport'])->name('exams.student-report');
+
         // Dormitory
         Route::resource('dormitories', DormitoryController::class);
         Route::post('/dormitories/assign-bed', [DormitoryController::class, 'assignBed'])->name('dormitories.assign-bed');
         Route::post('/dormitories/release-bed/{bed}', [DormitoryController::class, 'releaseBed'])->name('dormitories.release-bed');
 
         // Admissions
-        Route::resource('admissions', AdmissionController::class)->except(['create', 'store']);
+        Route::resource('admissions', AdmissionController::class);
         Route::post('/admissions/{admission}/approve', [AdmissionController::class, 'approve'])->name('admissions.approve');
         Route::post('/admissions/{admission}/reject', [AdmissionController::class, 'reject'])->name('admissions.reject');
 

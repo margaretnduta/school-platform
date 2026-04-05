@@ -79,6 +79,11 @@
                 <span class="mr-3 text-lg">📅</span> Events
             </a>
 
+            <a href="{{ route('admin.exams.index') }}"
+               class="flex items-center px-4 py-2.5 rounded-lg hover:bg-primary-600/50 transition font-medium {{ request()->routeIs('admin.exams.*') ? 'bg-primary-600 shadow-md' : 'hover:bg-white/10' }}">
+                <span class="mr-3 text-lg">📝</span> Exams
+            </a>
+
         </nav>
 
         <!-- Logout -->
