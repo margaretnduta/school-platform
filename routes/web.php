@@ -84,13 +84,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     // ── Teacher Routes ────────────────────────────────────────
+// ── Teacher Routes ────────────────────────────────────────
 Route::prefix('teacher')->name('teacher.')->middleware('role:teacher')->group(function () {
-    Route::get('/dashboard',          [TeacherController::class, 'dashboard'])->name('dashboard');
-    Route::get('/students',           [TeacherController::class, 'myStudents'])->name('students');
-    Route::get('/attendance',         [TeacherController::class, 'attendance'])->name('attendance');
-    Route::post('/attendance/save',   [TeacherController::class, 'saveAttendance'])->name('attendance.save');
-    Route::get('/marks',              [TeacherController::class, 'marks'])->name('marks');
-    Route::post('/marks/save',        [TeacherController::class, 'saveMarks'])->name('marks.save');
+    Route::get('/dashboard',         [TeacherController::class, 'dashboard'])->name('dashboard');
+    Route::get('/students',          [TeacherController::class, 'myStudents'])->name('students');
+    Route::get('/students/{id}',     [TeacherController::class, 'studentProfile'])->name('student.profile');
+    Route::get('/attendance',        [TeacherController::class, 'attendance'])->name('attendance');
+    Route::post('/attendance/save',  [TeacherController::class, 'saveAttendance'])->name('attendance.save');
+    Route::get('/marks',             [TeacherController::class, 'marks'])->name('marks');
+    Route::post('/marks/save',       [TeacherController::class, 'saveMarks'])->name('marks.save');
 });
 
     // ── Parent Routes ─────────────────────────────────────────
