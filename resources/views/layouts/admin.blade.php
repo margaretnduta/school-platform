@@ -6,114 +6,147 @@
     <title>School Platform - Admin</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gray-50 font-sans antialiased">
+<body class="bg-gray-100 font-sans antialiased">
 
 <div class="flex h-screen overflow-hidden">
 
-    <!-- SIDEBAR -->
-    <aside class="w-64 bg-gradient-to-b from-primary-700 to-primary-900 text-white flex flex-col flex-shrink-0 shadow-lg">
+    {{-- SIDEBAR --}}
+    <aside class="w-64 bg-blue-900 text-white flex flex-col flex-shrink-0">
 
-        <!-- Logo -->
-        <div class="px-6 py-6 border-b border-primary-600/50">
+        {{-- Logo --}}
+        <div class="px-6 py-5 border-b border-blue-800">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center text-xl">
+                <div class="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center text-lg flex-shrink-0">
                     🏫
                 </div>
                 <div>
-                    <h1 class="text-lg font-bold">SchoolAdmin</h1>
-                    <p class="text-xs text-primary-200 mt-0.5">Admin Portal</p>
+                    <h1 class="text-base font-bold leading-tight">SchoolAdmin</h1>
+                    <p class="text-xs text-blue-300 leading-tight">Administration Portal</p>
                 </div>
             </div>
         </div>
 
-        <!-- Navigation Links -->
-        <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+        {{-- Navigation --}}
+        <nav class="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
 
             <a href="{{ route('admin.dashboard') }}"
-               class="flex items-center px-4 py-2.5 rounded-lg hover:bg-primary-600/50 transition font-medium {{ request()->routeIs('admin.dashboard') ? 'bg-primary-600 shadow-md' : 'hover:bg-white/10' }}">
-                <span class="mr-3 text-lg">📊</span> Dashboard
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                      {{ request()->routeIs('admin.dashboard') ? 'bg-white/15 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                <span class="text-base w-5 text-center">📊</span>
+                Dashboard
             </a>
 
             <a href="{{ route('admin.students.index') }}"
-               class="flex items-center px-4 py-2.5 rounded-lg hover:bg-primary-600/50 transition font-medium {{ request()->routeIs('admin.students.*') ? 'bg-primary-600 shadow-md' : 'hover:bg-white/10' }}">
-                <span class="mr-3 text-lg">🎓</span> Students
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                      {{ request()->routeIs('admin.students.*') ? 'bg-white/15 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                <span class="text-base w-5 text-center">🎓</span>
+                Students
             </a>
 
             <a href="{{ route('admin.staff.index') }}"
-               class="flex items-center px-4 py-2.5 rounded-lg hover:bg-primary-600/50 transition font-medium {{ request()->routeIs('admin.staff.*') ? 'bg-primary-600 shadow-md' : 'hover:bg-white/10' }}">
-                <span class="mr-3 text-lg">👨‍🏫</span> Staff
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                      {{ request()->routeIs('admin.staff.*') ? 'bg-white/15 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                <span class="text-base w-5 text-center">👨‍🏫</span>
+                Staff
             </a>
 
             <a href="{{ route('admin.classes.index') }}"
-               class="flex items-center px-4 py-2.5 rounded-lg hover:bg-primary-600/50 transition font-medium {{ request()->routeIs('admin.classes.*') ? 'bg-primary-600 shadow-md' : 'hover:bg-white/10' }}">
-                <span class="mr-3 text-lg">🏫</span> Classes
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                      {{ request()->routeIs('admin.classes.*') ? 'bg-white/15 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                <span class="text-base w-5 text-center">🏫</span>
+                Classes
             </a>
 
             <a href="{{ route('admin.dormitories.index') }}"
-               class="flex items-center px-4 py-2.5 rounded-lg hover:bg-primary-600/50 transition font-medium {{ request()->routeIs('admin.dormitories.*') ? 'bg-primary-600 shadow-md' : 'hover:bg-white/10' }}">
-                <span class="mr-3 text-lg">🛏️</span> Dormitories
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                      {{ request()->routeIs('admin.dormitories.*') ? 'bg-white/15 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                <span class="text-base w-5 text-center">🛏️</span>
+                Dormitories
             </a>
 
             <a href="{{ route('admin.admissions.index') }}"
-               class="flex items-center px-4 py-2.5 rounded-lg hover:bg-primary-600/50 transition font-medium {{ request()->routeIs('admin.admissions.*') ? 'bg-primary-600 shadow-md' : 'hover:bg-white/10' }}">
-                <span class="mr-3 text-lg">📋</span> Admissions
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                      {{ request()->routeIs('admin.admissions.*') ? 'bg-white/15 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                <span class="text-base w-5 text-center">📋</span>
+                Admissions
             </a>
 
             <a href="{{ route('admin.attendance.index') }}"
-               class="flex items-center px-4 py-2.5 rounded-lg hover:bg-primary-600/50 transition font-medium {{ request()->routeIs('admin.attendance.*') ? 'bg-primary-600 shadow-md' : 'hover:bg-white/10' }}">
-                <span class="mr-3 text-lg">✅</span> Attendance
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                      {{ request()->routeIs('admin.attendance.*') ? 'bg-white/15 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                <span class="text-base w-5 text-center">✅</span>
+                Attendance
             </a>
 
             <a href="{{ route('admin.meals.index') }}"
-               class="flex items-center px-4 py-2.5 rounded-lg hover:bg-primary-600/50 transition font-medium {{ request()->routeIs('admin.meals.*') ? 'bg-primary-600 shadow-md' : 'hover:bg-white/10' }}">
-                <span class="mr-3 text-lg">🍽️</span> Meals
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                      {{ request()->routeIs('admin.meals.*') ? 'bg-white/15 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                <span class="text-base w-5 text-center">🍽️</span>
+                Meals
             </a>
 
             <a href="{{ route('admin.academics.index') }}"
-               class="flex items-center px-4 py-2.5 rounded-lg hover:bg-primary-600/50 transition font-medium {{ request()->routeIs('admin.academics.*') ? 'bg-primary-600 shadow-md' : 'hover:bg-white/10' }}">
-                <span class="mr-3 text-lg">📚</span> Academics
-            </a>
-
-            <a href="{{ route('admin.events.index') }}"
-               class="flex items-center px-4 py-2.5 rounded-lg hover:bg-primary-600/50 transition font-medium {{ request()->routeIs('admin.events.*') ? 'bg-primary-600 shadow-md' : 'hover:bg-white/10' }}">
-                <span class="mr-3 text-lg">📅</span> Events
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                      {{ request()->routeIs('admin.academics.*') ? 'bg-white/15 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                <span class="text-base w-5 text-center">📚</span>
+                Academics
             </a>
 
             <a href="{{ route('admin.exams.index') }}"
-               class="flex items-center px-4 py-2.5 rounded-lg hover:bg-primary-600/50 transition font-medium {{ request()->routeIs('admin.exams.*') ? 'bg-primary-600 shadow-md' : 'hover:bg-white/10' }}">
-                <span class="mr-3 text-lg">📝</span> Exams
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                      {{ request()->routeIs('admin.exams.*') ? 'bg-white/15 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                <span class="text-base w-5 text-center">📝</span>
+                Exams
+            </a>
+
+            <a href="{{ route('admin.events.index') }}"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
+                      {{ request()->routeIs('admin.events.*') ? 'bg-white/15 text-white' : 'text-blue-100 hover:bg-white/10 hover:text-white' }}">
+                <span class="text-base w-5 text-center">📅</span>
+                Events
             </a>
 
         </nav>
 
-        <!-- Logout -->
-        <div class="px-4 py-4 border-t border-primary-600/50">
+        {{-- User & Logout --}}
+        <div class="px-3 py-4 border-t border-blue-800">
+            <div class="flex items-center gap-3 px-3 py-2 mb-2">
+                <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-sm flex-shrink-0">
+                    👤
+                </div>
+                <div class="min-w-0">
+                    <p class="text-sm font-medium text-white truncate">{{ auth()->user()->name }}</p>
+                    <p class="text-xs text-blue-300 truncate">Administrator</p>
+                </div>
+            </div>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit"
-                        class="w-full flex items-center px-4 py-2.5 rounded-lg hover:bg-primary-600/50 transition font-medium hover:bg-white/10">
-                    <span class="mr-3 text-lg">🚪</span> Logout
+                        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm
+                               text-blue-100 hover:bg-white/10 hover:text-white transition-colors">
+                    <span class="text-base w-5 text-center">🚪</span>
+                    Logout
                 </button>
             </form>
         </div>
 
     </aside>
 
-    <!-- MAIN CONTENT AREA -->
+    {{-- MAIN CONTENT --}}
     <div class="flex-1 flex flex-col overflow-hidden">
 
-        <!-- Top Navbar -->
-        <header class="bg-white border-b border-gray-200 shadow-sm px-6 py-4 flex items-center justify-between">
-            <h2 class="text-2xl font-bold text-gray-900">@yield('page_title', 'Dashboard')</h2>
-            <div class="flex items-center gap-4">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center text-white text-sm font-bold">
-                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                </div>
-                <span class="text-sm font-medium text-gray-700">{{ auth()->user()->name }}</span>
+        {{-- Top Header --}}
+        <header class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between flex-shrink-0">
+            <div>
+                <h2 class="text-lg font-semibold text-gray-800">@yield('page_title', 'Dashboard')</h2>
+                <p class="text-xs text-gray-400 mt-0.5">@yield('page_subtitle', 'School Digital Administration Platform')</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="text-sm text-gray-500">{{ date('l, d M Y') }}</span>
             </div>
         </header>
 
-        <!-- Page Content -->
+        {{-- Page Content --}}
         <main class="flex-1 overflow-y-auto p-6">
             @yield('content')
         </main>

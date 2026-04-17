@@ -9,17 +9,17 @@ use App\Models\SchoolClass;
 use App\Models\Subject;
 use App\Models\Attendance;
 use App\Models\AcademicRecord;
+use App\Models\DormitoryBed;
+use App\Models\MealRecord;
 use Illuminate\Http\Request;
 
 class TeacherController extends Controller
 {
-    // Get the staff record linked to the logged in user by email
     private function getStaff()
     {
         return Staff::where('email', auth()->user()->email)->first();
     }
 
-    // Dashboard
     public function dashboard()
     {
         $staff = $this->getStaff();
@@ -28,17 +28,14 @@ class TeacherController extends Controller
             return view('teacher.no-profile');
         }
 
-        // Get classes where this teacher is class teacher
         $myClasses = SchoolClass::where('class_teacher_id', $staff->id)
                                 ->where('status', 'active')
                                 ->get();
 
-        // Get subjects assigned to this teacher
         $mySubjects = Subject::where('teacher_id', $staff->id)
                              ->where('status', 'active')
                              ->get();
 
-        // Total students across all my classes
         $totalStudents = 0;
         foreach ($myClasses as $class) {
             $totalStudents += Student::where('class', $class->name)
@@ -46,7 +43,6 @@ class TeacherController extends Controller
                                      ->count();
         }
 
-        // Today's attendance already taken
         $todayAttendance = Attendance::where('recorded_by', auth()->id())
                                      ->whereDate('date', today())
                                      ->count();
@@ -56,7 +52,6 @@ class TeacherController extends Controller
         ));
     }
 
-    // View students in teacher's class
     public function myStudents(Request $request)
     {
         $staff = $this->getStaff();
@@ -71,16 +66,72 @@ class TeacherController extends Controller
 
         $selectedClass = $request->class ?? $myClasses->first()?->name;
 
-        $students = $selectedClass
-            ? Student::where('class', $selectedClass)
-                     ->where('status', 'active')
-                     ->get()
-            : collect();
+        $students = collect();
+        if ($selectedClass) {
+            $students = Student::where('class', $selectedClass)
+                               ->where('status', 'active')
+                               ->get();
+        }
 
-        return view('teacher.students', compact('myClasses', 'students', 'selectedClass', 'staff'));
+        return view('teacher.students', compact(
+            'myClasses', 'students', 'selectedClass', 'staff'
+        ));
     }
 
-    // Attendance — load form
+    public function studentProfile($studentId)
+    {
+        $staff   = $this->getStaff();
+        $student = Student::findOrFail($studentId);
+
+        // Attendance stats
+        $attendanceRecords = Attendance::where('student_id', $studentId)
+                                       ->orderBy('date', 'desc')
+                                       ->get();
+        $totalDays    = $attendanceRecords->count();
+        $presentDays  = $attendanceRecords->where('status', 'present')->count();
+        $absentDays   = $attendanceRecords->where('status', 'absent')->count();
+        $lateDays     = $attendanceRecords->where('status', 'late')->count();
+        $attendanceRate = $totalDays > 0 ? round(($presentDays / $totalDays) * 100) : 0;
+
+        // Academic records — current year
+        $academicRecords = AcademicRecord::where('student_id', $studentId)
+                                         ->where('year', date('Y'))
+                                         ->with('subject')
+                                         ->get();
+
+        // Meal stats — last 30 days
+        $mealRecords  = MealRecord::where('student_id', $studentId)
+                                  ->with('meal')
+                                  ->whereHas('meal', fn($q) => $q->whereBetween('date', [
+                                      now()->subDays(30)->format('Y-m-d'),
+                                      now()->format('Y-m-d')
+                                  ]))
+                                  ->get();
+        $totalMeals   = $mealRecords->count();
+        $takenMeals   = $mealRecords->where('status', 'taken')->count();
+        $mealRate     = $totalMeals > 0 ? round(($takenMeals / $totalMeals) * 100) : 0;
+
+        // Bed assignment
+        $bed = DormitoryBed::where('student_id', $studentId)
+                           ->with('room', 'dormitory')
+                           ->first();
+
+        // Exam eligibility — check attendance rate
+        $examEligible   = $attendanceRate >= 75;
+        $eligibilityMsg = $examEligible
+            ? 'Eligible — Attendance above 75%'
+            : 'Not Eligible — Attendance below 75%';
+
+        return view('teacher.student-profile', compact(
+            'student', 'staff',
+            'attendanceRecords', 'totalDays', 'presentDays',
+            'absentDays', 'lateDays', 'attendanceRate',
+            'academicRecords',
+            'mealRecords', 'totalMeals', 'takenMeals', 'mealRate',
+            'bed', 'examEligible', 'eligibilityMsg'
+        ));
+    }
+
     public function attendance(Request $request)
     {
         $staff = $this->getStaff();
@@ -114,7 +165,6 @@ class TeacherController extends Controller
         ));
     }
 
-    // Save attendance
     public function saveAttendance(Request $request)
     {
         $request->validate([
@@ -144,7 +194,6 @@ class TeacherController extends Controller
         ])->with('success', 'Attendance saved for ' . $request->class . ' on ' . $request->date);
     }
 
-    // Marks — entry page
     public function marks(Request $request)
     {
         $staff = $this->getStaff();
@@ -153,11 +202,11 @@ class TeacherController extends Controller
             return redirect()->route('teacher.dashboard');
         }
 
-        // Subjects this teacher teaches
-        $mySubjects    = Subject::where('teacher_id', $staff->id)
-                                ->where('status', 'active')
-                                ->get();
+        $mySubjects = Subject::where('teacher_id', $staff->id)
+                             ->where('status', 'active')
+                             ->get();
 
+        $myClasses       = $mySubjects->pluck('class')->unique()->values();
         $selectedClass   = $request->class;
         $selectedTerm    = $request->term;
         $selectedYear    = $request->year ?? date('Y');
@@ -165,15 +214,14 @@ class TeacherController extends Controller
         $students        = collect();
         $subject         = null;
 
-        if ($selectedClass && $selectedTerm && $selectedSubject) {
-            $subject  = Subject::findOrFail($selectedSubject);
+        // Load students as soon as class + subject are selected
+        // Term is only needed when saving — not for loading students
+        if ($selectedClass && $selectedSubject) {
+            $subject  = Subject::find($selectedSubject);
             $students = Student::where('class', $selectedClass)
                                ->where('status', 'active')
                                ->get();
         }
-
-        // Unique classes from teacher's subjects
-        $myClasses = $mySubjects->pluck('class')->unique()->values();
 
         return view('teacher.marks', compact(
             'mySubjects', 'myClasses', 'students', 'subject',
@@ -182,7 +230,6 @@ class TeacherController extends Controller
         ));
     }
 
-    // Save marks
     public function saveMarks(Request $request)
     {
         $request->validate([

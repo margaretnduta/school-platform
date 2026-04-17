@@ -9,17 +9,14 @@
         <!-- Role Selection -->
         <div>
             <x-input-label for="role" :value="__('I am a')" class="text-gray-700 font-semibold mb-2" />
-            <select name="role" id="role"
-                    class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition bg-white"
-                    required>
-                <option value="">Select your role...</option>
-                <option value="parent" {{ old('role') == 'parent' ? 'selected' : '' }}>
-                    👨‍👩‍👧‍👦 Parent — Applying for my child
-                </option>
-                <option value="student" {{ old('role') == 'student' ? 'selected' : '' }}>
-                    🎓 Student — Applying for myself
-                </option>
-            </select>
+           <select name="role" id="role"
+        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+        required>
+    <option value="">Select your role</option>
+    <option value="parent"  {{ old('role') == 'parent'  ? 'selected' : '' }}>Parent — Applying for my child</option>
+    <option value="student" {{ old('role') == 'student' ? 'selected' : '' }}>Student — Applying for myself</option>
+    <option value="teacher" {{ old('role') == 'teacher' ? 'selected' : '' }}>Teacher — School Staff</option>
+</select>
             <x-input-error :messages="$errors->get('role')" class="mt-2" />
         </div>
 
