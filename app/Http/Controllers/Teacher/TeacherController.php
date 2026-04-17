@@ -194,42 +194,49 @@ class TeacherController extends Controller
         ])->with('success', 'Attendance saved for ' . $request->class . ' on ' . $request->date);
     }
 
-    public function marks(Request $request)
-    {
-        $staff = $this->getStaff();
+   public function marks(Request $request)
+{
+    $staff = $this->getStaff();
 
-        if (!$staff) {
-            return redirect()->route('teacher.dashboard');
-        }
-
-        $mySubjects = Subject::where('teacher_id', $staff->id)
-                             ->where('status', 'active')
-                             ->get();
-
-        $myClasses       = $mySubjects->pluck('class')->unique()->values();
-        $selectedClass   = $request->class;
-        $selectedTerm    = $request->term;
-        $selectedYear    = $request->year ?? date('Y');
-        $selectedSubject = $request->subject_id;
-        $students        = collect();
-        $subject         = null;
-
-        // Load students as soon as class + subject are selected
-        // Term is only needed when saving — not for loading students
-        if ($selectedClass && $selectedSubject) {
-            $subject  = Subject::find($selectedSubject);
-            $students = Student::where('class', $selectedClass)
-                               ->where('status', 'active')
-                               ->get();
-        }
-
-        return view('teacher.marks', compact(
-            'mySubjects', 'myClasses', 'students', 'subject',
-            'selectedClass', 'selectedTerm', 'selectedYear',
-            'selectedSubject', 'staff'
-        ));
+    if (!$staff) {
+        return redirect()->route('teacher.dashboard');
     }
 
+    $mySubjects = Subject::where('teacher_id', $staff->id)
+                         ->where('status', 'active')
+                         ->get();
+
+    $myClasses       = $mySubjects->pluck('class')->unique()->values();
+    $selectedClass   = $request->class;
+    $selectedTerm    = $request->term;
+    $selectedYear    = $request->year ?? date('Y');
+    $selectedSubject = $request->subject_id;
+    $students        = collect();
+    $subject         = null;
+
+    if ($selectedClass && $selectedSubject) {
+        $subject = Subject::find($selectedSubject);
+
+        // Extract the level from the subject class
+        // e.g. "Form 1" matches "Form 1A", "Form 1B"
+        $subjectLevel = $subject ? $subject->class : $selectedClass;
+
+        $students = Student::where('status', 'active')
+                           ->where(function($query) use ($selectedClass, $subjectLevel) {
+                               // Try exact match first
+                               $query->where('class', $selectedClass)
+                                     // Also match by level prefix e.g. "Form 1"
+                                     ->orWhere('class', 'LIKE', $subjectLevel . '%');
+                           })
+                           ->get();
+    }
+
+    return view('teacher.marks', compact(
+        'mySubjects', 'myClasses', 'students', 'subject',
+        'selectedClass', 'selectedTerm', 'selectedYear',
+        'selectedSubject', 'staff'
+    ));
+}
     public function saveMarks(Request $request)
     {
         $request->validate([
