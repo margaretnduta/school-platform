@@ -54,6 +54,27 @@ This platform solves these problems by providing a **single integrated system** 
 | 📊 **Analytics Dashboard** | Admin dashboard with stats on students, staff, classes, and admissions |
 
 ---
+## 📸 Screenshots
+
+### 🔐 Login & Authentication
+![Login Page](screenshots/01-login.png)
+
+### 📊 Admin Dashboard
+![Admin Dashboard](screenshots/02-admin-dashboard.png)
+
+### 🎓 Student Management
+![Student Management](screenshots/03-students-list.png)
+
+### 📋 Admissions Review Panel
+![Admissions Panel](screenshots/04-admissions-review.png)
+
+### 🛏️ Dormitory Management
+![Dormitory Management](screenshots/05-dormitory-management.png)
+
+### ✅ Attendance Tracking
+![Attendance System](screenshots/06-attendance.png)
+
+---
 
 ## 🛠 Tech Stack
 

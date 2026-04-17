@@ -43,10 +43,10 @@ class DashboardController extends Controller
         return view('dashboards.admin', compact('studentCount', 'staffCount', 'classCount', 'pendingAdmissions', 'recentEvents', 'upcomingExams', 'ongoingExams', 'completedExams'));
     }
 
-    public function teacherDashboard()
-    {
-        return view('dashboards.teacher');
-    }
+   public function teacherDashboard()
+{
+    return redirect()->route('teacher.dashboard');
+}
 
     public function parentDashboard()
     {
