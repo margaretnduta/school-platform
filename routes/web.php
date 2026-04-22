@@ -17,6 +17,7 @@ use App\Http\Controllers\Parent\ParentAdmissionController;
 use App\Http\Controllers\Student\StudentAdmissionController;
 use App\Models\Event;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Parent\ParentPortalController;
 
 Route::get('/', function () {
     $upcomingEvents = Event::where('is_public', true)
@@ -96,10 +97,15 @@ Route::prefix('teacher')->name('teacher.')->middleware('role:teacher')->group(fu
 });
 
     // ── Parent Routes ─────────────────────────────────────────
-    Route::prefix('parent')->name('parent.')->middleware('role:parent')->group(function () {
-        Route::get('/dashboard', [DashboardController::class, 'parentDashboard'])->name('dashboard');
-        Route::resource('admissions', ParentAdmissionController::class)->only(['index', 'create', 'store', 'show']);
-    });
+Route::prefix('parent')->name('parent.')->middleware('role:parent')->group(function () {
+    Route::get('/dashboard',    [ParentPortalController::class, 'dashboard'])->name('dashboard');
+    Route::get('/attendance',   [ParentPortalController::class, 'attendance'])->name('attendance');
+    Route::get('/report-card',  [ParentPortalController::class, 'reportCard'])->name('report-card');
+    Route::get('/meals',        [ParentPortalController::class, 'meals'])->name('meals');
+    Route::get('/dormitory',    [ParentPortalController::class, 'dormitory'])->name('dormitory');
+    Route::get('/events',       [ParentPortalController::class, 'events'])->name('events');
+    Route::resource('admissions', ParentAdmissionController::class)->only(['index', 'create', 'store', 'show']);
+});
 
     // ── Student Routes ────────────────────────────────────────
     Route::prefix('student')->name('student.')->middleware('role:student')->group(function () {

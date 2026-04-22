@@ -48,14 +48,10 @@ class DashboardController extends Controller
     return redirect()->route('teacher.dashboard');
 }
 
-    public function parentDashboard()
-    {
-        $user        = auth()->user();
-        $application = \App\Models\Admission::where('guardian_email', $user->email)
-                                            ->orWhere('email', $user->email)
-                                            ->latest()->first();
-        return view('dashboards.parent', compact('application'));
-    }
+  public function parentDashboard()
+{
+    return redirect()->route('parent.dashboard');
+}
 
     public function studentDashboard()
     {
