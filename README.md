@@ -53,6 +53,34 @@ This platform solves these problems by providing a **single integrated system** 
 | 👨‍👩‍👦 **Parent Portal** | Parents view child's progress, attendance, and application status |
 | 📊 **Analytics Dashboard** | Admin dashboard with stats on students, staff, classes, and admissions |
 
+## Features Remaining
+ 
+### Student Portal Extended
+- [ ] View own attendance records
+- [ ] View own report card and marks
+- [ ] View own meal records
+- [ ] View own dormitory assignment
+- [ ] View school events
+### Admin Analytics
+- [ ] Attendance trend charts
+- [ ] Academic performance overview charts
+- [ ] Admission statistics over time
+### Events Module Full UI
+- [ ] Admin create and edit event with image upload
+- [ ] Public events page with filters
+### Timetable Module
+- [ ] Admin creates class timetable
+- [ ] Teacher views their timetable
+- [ ] Student and parent views class timetable
+### Notifications & Announcements
+- [ ] Admin sends school-wide announcements
+- [ ] Parents and students see announcements on their portal
+### Fee Management (Optional)
+- [ ] Record student fee payments
+- [ ] Parent views fee balance and payment history
+- [ ] Admin generates fee reports
+---
+
 ---
 ## 📸 Screenshots
 
@@ -563,7 +591,7 @@ Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.
 
 This project was built as part of an entrepreneurship assignment at **The Technical University of Kenya** by:
 
-**Margaret Wambui Nduta** — BTECHIT SCCJ/01497/2022
+**Margaret Wambui Nduta** 
 
 If you would like to contribute or extend the project:
 
@@ -577,8 +605,7 @@ If you would like to contribute or extend the project:
 
 ## 📄 License
 
-This project is open source and available under the [MIT License](LICENSE).
-
+This project is open source .
 ---
 
 > Built with ❤️ for Kenyan Schools — **SchoolAdmin Kenya**
